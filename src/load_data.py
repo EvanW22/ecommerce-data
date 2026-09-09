@@ -49,46 +49,46 @@ def load_table(connection, csv_file, table_name):
 
     print(f"Loaded {len(df)} rows into {table_name}.")
 
+def clear_tables(connection):
+    cursor = connection.cursor()
+
+    print("Clearing existing tables...")
+
+    cursor.execute("""
+        TRUNCATE TABLE
+            order_items,
+            orders,
+            products,
+            customers
+        RESTART IDENTITY CASCADE;
+    """)
+
+    connection.commit()
+    cursor.close()
+
+    print("Existing data cleared.")
+
 
 def main():
     connection = get_connection()
 
     try:
-        # Load parent tables first
-        load_table(
-            connection,
-            "data/customers.csv",
-            "customers"
-        )
+        clear_tables(connection)
 
-        load_table(
-            connection,
-            "data/products.csv",
-            "products"
-        )
-
-        # Load child tables after their parent tables
-        load_table(
-            connection,
-            "data/orders.csv",
-            "orders"
-        )
-
-        load_table(
-            connection,
-            "data/order_items.csv",
-            "order_items"
-        )
+        load_table(connection, "data/customers.csv", "customers")
+        load_table(connection, "data/products.csv", "products")
+        load_table(connection, "data/orders.csv", "orders")
+        load_table(connection, "data/order_items.csv", "order_items")
 
         print("\nAll data loaded successfully!")
 
     except Exception as e:
         connection.rollback()
         print(f"\nError loading data: {e}")
+        raise
 
     finally:
         connection.close()
-
 
 if __name__ == "__main__":
     main()

@@ -1,19 +1,27 @@
 services:
-
   airflow:
-    image: apache/airflow:3.3.1
-
+    build: .
     container_name: ecommerce-airflow
 
     ports:
       - "8080:8080"
 
     environment:
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://ecommerce_user:ecommerce_password@host.docker.internal:5432/airflow
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@host.docker.internal:5432/airflow
+
+      DB_HOST: host.docker.internal
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
 
     volumes:
       - ./dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
+
+      - ../src:/opt/airflow/src
+      - ../data:/opt/airflow/data
+      - ../.env:/opt/airflow/.env
 
     command: standalone
