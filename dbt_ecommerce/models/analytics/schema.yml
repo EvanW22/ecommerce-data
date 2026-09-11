@@ -1,0 +1,59 @@
+version: 2
+
+models:
+
+  - name: dim_customers
+    description: "Customer dimension containing customer attributes."
+
+    columns:
+      - name: customer_id
+        description: "Unique identifier for a customer."
+        data_tests:
+          - not_null
+          - unique
+
+  - name: dim_products
+    description: "Product dimension containing product attributes."
+
+    columns:
+      - name: product_id
+        description: "Unique identifier for a product."
+        data_tests:
+          - not_null
+          - unique
+
+  - name: fct_orders
+    description: "Order-item level fact table used for ecommerce analysis."
+
+    columns:
+      - name: order_id
+        description: "Identifier for the order."
+        data_tests:
+          - not_null
+
+      - name: customer_id
+        description: "Customer associated with the order."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+
+      - name: product_id
+        description: "Product associated with the order item."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_products')
+              field: product_id
+
+      - name: status
+        description: "Current status of the order."
+        data_tests:
+          - not_null
+          - accepted_values:
+              values:
+                - completed
+                - shipped
+                - processing
+                - cancelled

@@ -1,29 +1,32 @@
-# Python virtual environment
 .venv/
 venv/
 env/
-
-# Python cache files
 __pycache__/
 *.py[cod]
 
-# Environment variables / secrets
+# Environment / credentials
 .env
 .env.*
+!.env.example
 
-# Generated data
+# dbt
+target/
+dbt_packages/
+logs/
+
+# Data
 data/
 
-# Airflow
-airflow/logs/
-airflow/standalone_admin_password.txt
-
-# Jupyter Notebook checkpoints
+# Jupyter
 .ipynb_checkpoints/
 
-# IDE settings
+# VS Code
 .vscode/
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# Airflow
+airflow/logs/
+airflow/standalone_admin_password.txt
